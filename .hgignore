@@ -1,0 +1,10 @@
+.idea/
+.iml
+.gradle/
+build/
+build-cache/
+out/
+.orig
+npm-debug.log*
+coverage/
+bazel-*
