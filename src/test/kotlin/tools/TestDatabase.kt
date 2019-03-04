@@ -7,47 +7,54 @@ import javax.sql.DataSource
 
 object TestDatabase {
 
-    private val embeddedPostgres: EmbeddedPostgres
-    private val dataSource: DataSource
+	private val embeddedPostgres: EmbeddedPostgres
+	private val dataSource: DataSource
 
-    init {
-        embeddedPostgres = EmbeddedPostgres.builder().setPort(5432).start()
-        dataSource = embeddedPostgres.postgresDatabase
-        initDB(dataSource)
-    }
+	init {
+		embeddedPostgres = EmbeddedPostgres.builder().setPort(5432).start()
+		dataSource = embeddedPostgres.postgresDatabase
+		initDB(dataSource)
+	}
 
-    fun getDataSource(): DataSource {
-        return dataSource
-    }
+	fun getDataSource(): DataSource {
+		return dataSource
+	}
 
-    private fun initDB(ds: DataSource) {
-        ds.connection.use {
-            val jdbi = Jdbi.open(it)
-            jdbi.createUpdate(
-                """CREATE EXTENSION IF NOT EXISTS pgcrypto
+	private fun initDB(ds: DataSource) {
+		ds.connection.use {
+			val jdbi = Jdbi.open(it)
+			jdbi.createUpdate(
+				"""CREATE EXTENSION IF NOT EXISTS pgcrypto
                     WITH SCHEMA pg_catalog"""
-            ).execute()
-            jdbi.createUpdate(
-                """
-                CREATE TABLE demotable (
+			).execute()
+			jdbi.createUpdate(
+				"""
+                CREATE TABLE demotableenum (
     					demo_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    					enumlist VARCHAR[] NOT NULL )
+    					enumlist VARCHAR[] NOT NULL );
                 """
-            ).execute()
-            jdbi.close()
-        }
-    }
+			).execute()
+			jdbi.createUpdate(
+				"""
+                CREATE TABLE demotableuuid (
+    					demo_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    					uuidlist UUID[] NOT NULL );
+                """
+			).execute()
+			jdbi.close()
+		}
+	}
 
-    private fun executeScript(url: URL) {
-        val script = url.readText(Charsets.UTF_8)
-        executeScript(script)
-    }
+	private fun executeScript(url: URL) {
+		val script = url.readText(Charsets.UTF_8)
+		executeScript(script)
+	}
 
-    fun executeScript(script: String) {
-        dataSource.connection.use {
-            val jdbi = Jdbi.open(it)
-            jdbi.createScript(script).execute()
-            jdbi.close()
-        }
-    }
+	fun executeScript(script: String) {
+		dataSource.connection.use {
+			val jdbi = Jdbi.open(it)
+			jdbi.createScript(script).execute()
+			jdbi.close()
+		}
+	}
 }

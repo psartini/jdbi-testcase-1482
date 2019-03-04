@@ -3,9 +3,9 @@ package eu.psartini.issues.jdbi
 import eu.psartini.issues.jdbi.tools.JdbiProvider
 import eu.psartini.issues.jdbi.tools.TestDatabase
 import org.jdbi.v3.sqlobject.kotlin.onDemand
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import java.util.*
 
 
 class DAOTest {
@@ -14,13 +14,13 @@ class DAOTest {
     private val demoDAO: DemoDAO = jdbi.onDemand()
 
     @Test
-    fun `insert java list`() {
+    fun `insert java_util_List Enum into VARCHAR ARRAY`() {
         val sqlInsert = """
-    	DELETE FROM demotable CASCADE;
+    	DELETE FROM demotableenum CASCADE;
 		"""
         TestDatabase.executeScript(sqlInsert)
 
-        val created = demoDAO.insertJavaList(
+        val created = demoDAO.insertJavaEnumList(
             enumList = listOf(MyEnum.VALUE1, MyEnum.VALUE2) as java.util.List<MyEnum>
         )
 
@@ -30,13 +30,13 @@ class DAOTest {
     }
 
     @Test
-    fun `insert kotlin list`() {
+    fun `insert kotlin_collections_List Enum into VARCHAR ARRAY`() {
         val sqlInsert = """
-    	DELETE FROM demotable CASCADE;
+    	DELETE FROM demotableenum CASCADE;
 		"""
         TestDatabase.executeScript(sqlInsert)
 
-        val created = demoDAO.insertKotlinList(
+        val created = demoDAO.insertKotlinEnumList(
             enumList = listOf(MyEnum.VALUE1, MyEnum.VALUE2)
         )
 
@@ -44,4 +44,37 @@ class DAOTest {
         assertNotNull(created)
         assertNotNull(created.demoId)
     }
+
+	@Test
+	fun `insert java_util_List UUID into VARCHAR ARRAY`() {
+		val sqlInsert = """
+    	DELETE FROM demotableuuid CASCADE;
+		"""
+		TestDatabase.executeScript(sqlInsert)
+
+		val created = demoDAO.insertJavaUUIDList(
+			uuidList = listOf(UUID.randomUUID(), UUID.randomUUID())
+				as java.util.List<UUID>
+		)
+
+		print(created)
+		assertNotNull(created)
+		assertNotNull(created.demoId)
+	}
+
+	@Test
+	fun `insert kotlin_collections_List UUID into VARCHAR ARRAY`() {
+		val sqlInsert = """
+    	DELETE FROM demotableuuid CASCADE;
+		"""
+		TestDatabase.executeScript(sqlInsert)
+
+		val created = demoDAO.insertKotlinUUIDList(
+			uuidList = listOf(UUID.randomUUID(), UUID.randomUUID())
+		)
+
+		print(created)
+		assertNotNull(created)
+		assertNotNull(created.demoId)
+	}
 }
