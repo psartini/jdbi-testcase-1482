@@ -11,3 +11,8 @@ data class DemoTableEnumWithKotlinList(
     val demoId: UUID,
     val enumlist: List<MyEnum>
 )
+
+data class DemoTableEnumWithKotlinMutableList(
+	val demoId: UUID,
+	val enumlist: MutableList<MyEnum>
+)

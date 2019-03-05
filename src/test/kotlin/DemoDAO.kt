@@ -12,6 +12,11 @@ interface DemoDAO : SqlObject {
     fun insertKotlinEnumList(enumList: List<MyEnum>)
 		: DemoTableEnumWithKotlinList
 
+	@SqlUpdate("INSERT INTO demotableenum (enumlist) VALUES (:enumList)")
+	@GetGeneratedKeys
+	fun insertKotlinEnumMutableList(enumList: MutableList<MyEnum>)
+		: DemoTableEnumWithKotlinMutableList
+
 	@SqlUpdate("INSERT INTO demotableuuid (uuidlist) VALUES (:uuidList)")
 	@GetGeneratedKeys
 	fun insertKotlinUUIDList(uuidList: List<UUID>)

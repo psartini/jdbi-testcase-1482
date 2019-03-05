@@ -46,6 +46,21 @@ class DAOTest {
     }
 
 	@Test
+	fun `insert kotlin_collections_MutableList Enum into VARCHAR ARRAY`() {
+		val sqlInsert = """
+    	DELETE FROM demotableenum CASCADE;
+		"""
+		TestDatabase.executeScript(sqlInsert)
+
+		val created = demoDAO.insertKotlinEnumMutableList(
+			enumList = mutableListOf(MyEnum.VALUE1, MyEnum.VALUE2)
+		)
+
+		assertNotNull(created)
+		assertNotNull(created.demoId)
+	}
+
+	@Test
 	fun `insert java_util_List UUID into VARCHAR ARRAY`() {
 		val sqlInsert = """
     	DELETE FROM demotableuuid CASCADE;
